@@ -10,3 +10,7 @@
 .buttonPad {
     padding: 0;
 }
+
+body {
+    padding:2%;
+}
