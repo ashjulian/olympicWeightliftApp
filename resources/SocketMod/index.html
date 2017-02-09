@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 16px Arial; }
+      form { background: #ffffff; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 5px; border-color: #b3daff; background: #FFFFFF; padding: 10px; width: 80%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; background: #FFFFFF; border-style: solid; border-width: 2px; border-color: #b3daff; }
+      #messages li:nth-child(odd) { background: #FFFFFF; }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+    $( document ).ready(function() {
+      var socket = io();
+      // nickname
+      socket.on("connect", function(data){
+        $('#status').html('Connected to chat');
+        nickname = prompt("Enter an alias");
+        socket.emit('join', nickname);
+      });
+      // ---------
+    $('form').submit(function(){
+        socket.emit('chat message', $('#m').val());
+        $('#m').val('');
+        return false;
+    });
+    socket.on('chat message', function(msg){
+        $('#messages').append($('<li>').text(msg));
+    });
+    });
+    </script>
+  </head>
+  <body>
+    <div class="well">
+      <ul class="list-group" id="messages"></ul>
+    </div>
+    
+    <form action="">
+      <div class="well" style="background-color: #b3daff">
+      <input id="m" autocomplete="off" /><button class="btn btn-primary">Send</button>
+      </div>
+    </form>
+    
+  </body>
+</html>
