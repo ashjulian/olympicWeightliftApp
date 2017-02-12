@@ -1,0 +1,37 @@
+<script src="http://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script>
+    // makes global socket variable creating a web socket connection from client to app.js
+    var socket = io();
+    var vote = true;
+
+    var happy = function(e){
+        //e.preventDefault();
+        vote = true;
+        socket.emit('vote', {
+        vote: vote
+    });
+    }
+    var sad = function(e){
+        //e.preventDefault();
+        vote = false;
+        socket.emit('vote', {
+        vote: vote
+    });
+    }
+    //happy();
+
+    socket.on('serverMsg', function(data){
+        console.log(data.msg);
+    });
+
+
+</script>
+
+<button onclick="happy()">Yes</button>
+<button onclick="sad()">No</button>
+<div>
+<form>
+<input type="image" onclick="happy()" src="lib/yes.png" class="img-responsive" alt="yes" />
+<input type="image" onclick="sad()" src="/judgelib/no.png" class="img-responsive" alt="no" />
+</form>
+</div>
