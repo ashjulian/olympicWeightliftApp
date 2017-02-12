@@ -1,0 +1,23 @@
+{
+  "name": "weightlifting",
+  "version": "1.0.0",
+  "description": "Capstone",
+  "main": "node.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashjulian/olympicWeightliftApp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ashjulian/olympicWeightliftApp/issues"
+  },
+  "homepage": "https://github.com/ashjulian/olympicWeightliftApp#readme",
+  "dependencies": {
+    "express": "^4.14.1",
+    "socket.io": "^1.7.2"
+  }
+}
