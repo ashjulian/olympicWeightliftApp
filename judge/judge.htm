@@ -3,11 +3,24 @@
     // makes global socket variable creating a web socket connection from client to app.js
     var socket = io();
     var vote = true;
-    var txtOutput;
-    var textArea;
+    // var txtOutput = document.getElementById("votes");
+    // var textArea = document.getElementById("textArea");
+    // var btnYes = document.getElementById('btnYes');
+    // var btnNo = document.getElementById('btnNo');
+
+    socket.on("connect", function(data){
+        var txtOutput = document.getElementById("votes");
+        var textArea = document.getElementById("textArea");
+        var btnYes = document.getElementById('btnYes');
+        var btnNo = document.getElementById('btnNo');
+        //console.log("Connected...");
+      });
 
     var happy = function(e){
         //e.preventDefault();
+        //console.log(btnYes);
+        btnYes.disabled = true;
+        btnNo.disabled = true;
         vote = true;
         socket.emit('vote', {
         vote: vote
@@ -15,6 +28,9 @@
     }
     var sad = function(e){
         //e.preventDefault();
+        //sconsole.log(btnNo);
+        tnYes.disabled = true;
+        tnNo.disabled = true;
         vote = false;
         socket.emit('vote', {
         vote: vote
@@ -28,8 +44,8 @@
 
     socket.on('judgeVoted', function(data){
         console.log("Judge " + data.judge + " voted " + data.vote);
-        txtOutput = document.getElementById("votes");
-        textArea = document.getElementById("textArea");
+        //txtOutput = document.getElementById("votes");
+        //textArea = document.getElementById("textArea");
         //txtOutput.innerHTML = "Judge " + data.judge + " voted " + data.vote + "<br />" + txtOutput.innerHTML;
         //textArea.value = "Judge " + data.judge + " voted " + data.vote + textArea.value;
         textArea.value = 'Judge ' + data.judge + ' voted ' + data.vote + '\\\n' + textArea.value;
@@ -37,8 +53,8 @@
 
 </script>
 
-<button onclick="happy()" style="background: url(/judge/lib/yes.png) no-repeat;">Yes</button>
-<button onclick="sad()">No</button>
+<button id="btnYes" onclick="happy()" style="background: url(/judge/lib/yes.png) no-repeat;">Yes</button>
+<button id="btnNo" onclick="sad()">No</button>
 <div>
 <form>
 <input type="image" onclick="happy()" url="lib/yes.png" class="img-responsive" alt="yes" />

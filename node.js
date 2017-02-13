@@ -41,7 +41,7 @@ socket.on('vote', function(data){
 
 
 socket.emit('serverMsg',{
-msg:'hello'
+msg:'Connected...'
 });
 
 
