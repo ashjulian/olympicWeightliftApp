@@ -4,6 +4,7 @@
     var socket = io();
     var vote = true;
     var txtOutput;
+    var textArea;
 
     var happy = function(e){
         //e.preventDefault();
@@ -28,7 +29,10 @@
     socket.on('judgeVoted', function(data){
         console.log("Judge " + data.judge + " voted " + data.vote);
         txtOutput = document.getElementById("votes");
-        txtOutput.innerHTML = "Judge " + data.judge + " voted " + data.vote + "<br />" + txtOutput.innerHTML;
+        textArea = document.getElementById("textArea");
+        //txtOutput.innerHTML = "Judge " + data.judge + " voted " + data.vote + "<br />" + txtOutput.innerHTML;
+        //textArea.value = "Judge " + data.judge + " voted " + data.vote + textArea.value;
+        textArea.value = 'Judge ' + data.judge + ' voted ' + data.vote + '\\\n' + textArea.value;
     });
 
 </script>
@@ -43,5 +47,6 @@
 </div>
 
 <div id="votes">
-
+    <!-- <textarea id="textArea"> </textarea> -->
+    <textarea id="textArea" rows="10" cols="35"> </textarea>
 </div>
