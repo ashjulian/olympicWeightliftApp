@@ -1,26 +1,43 @@
+
 <script src="http://cdn.socket.io/socket.io-1.4.5.js"></script>
 <script>
     // makes global socket variable creating a web socket connection from client to app.js
     var socket = io();
     var vote = true;
-    // var txtOutput = document.getElementById("votes");
-    // var textArea = document.getElementById("textArea");
-    // var btnYes = document.getElementById('btnYes');
-    // var btnNo = document.getElementById('btnNo');
+    var txtOutput;
+    var textArea;
+    var btnYes;
+    var btnNo;
 
     socket.on("connect", function(data){
-        var txtOutput = document.getElementById("votes");
-        var textArea = document.getElementById("textArea");
-        var btnYes = document.getElementById('btnYes');
-        var btnNo = document.getElementById('btnNo');
+        txtOutput = document.getElementById("votes");
+        textArea = document.getElementById("textArea");
+        // btnYes = document.getElementById('btnYes');
+        // btnNo = document.getElementById('btnNo');
+        btnYes = document.getElementsByTagName('input')[0];
+        btnNo = document.getElementsByTagName('input')[1];
         //console.log("Connected...");
       });
+
+    var onReset = function(){
+        btnYes.disabled = false;
+        btnNo.disabled = false;
+        btnNo.src = "lib/no.png";
+        btnYes.src = "lib/yes.png";
+
+    }
+
+    var disableVoting = function(){
+        btnYes.disabled = true;
+        btnNo.disabled = true;
+        btnNo.src = "lib/noDown.png";
+        btnYes.src = "lib/yesDown.png";
+    }
 
     var happy = function(e){
         //e.preventDefault();
         //console.log(btnYes);
-        btnYes.disabled = true;
-        btnNo.disabled = true;
+        disableVoting();
         vote = true;
         socket.emit('vote', {
         vote: vote
@@ -29,8 +46,7 @@
     var sad = function(e){
         //e.preventDefault();
         //sconsole.log(btnNo);
-        tnYes.disabled = true;
-        tnNo.disabled = true;
+        disableVoting();
         vote = false;
         socket.emit('vote', {
         vote: vote
@@ -53,16 +69,18 @@
 
 </script>
 
-<button id="btnYes" onclick="happy()" style="background: url(/judge/lib/yes.png) no-repeat;">Yes</button>
-<button id="btnNo" onclick="sad()">No</button>
+<div id="votes">
+    <!-- <textarea id="textArea"> </textarea> -->
+    <textarea id="textArea" rows="10" cols="50" style="padding: 5px; margin: 15px"> </textarea>
+</div>
+
 <div>
 <form>
-<input type="image" onclick="happy()" url="lib/yes.png" class="img-responsive" alt="yes" />
-<input type="image" onclick="sad()" url="/judge/lib/no.png" class="img-responsive" alt="no" />
+<input type="image" onclick="happy(); return false" src="lib/yes.png" class="img-responsive" alt="yes" />
+<input type="image" onclick="sad(); return false" src="lib/no.png" class="img-responsive" alt="no" /></br>
+<div style="margin-left:95px; margin-top: 40px;">
+    <input type="image" onclick="onReset(); return false" src="lib/reset.png" alt="reset" />
+</div>
 </form>
 </div>
 
-<div id="votes">
-    <!-- <textarea id="textArea"> </textarea> -->
-    <textarea id="textArea" rows="10" cols="35"> </textarea>
-</div>
