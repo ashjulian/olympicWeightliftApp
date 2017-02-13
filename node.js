@@ -18,6 +18,7 @@ app.get('/', function(req, res){
 
 server.listen(8080);
 console.log("Sever Started...");
+console.log("Listening on port 8080");
 
 var SOCKET_LIST = [];
 
@@ -29,11 +30,15 @@ io.sockets.on('connection', function(socket){
 socket.id = Math.random();
 
 socket.on('vote', function(data){
+    // when vote is heard prints judges vote to consol for now
     console.log('Judge ' + socket.id + " voted " + data.vote);
-    socket.emit('judgeVoted', {
-        vote:data.vote
+    //emit the vote back to all connectec sockets
+    socket.broadcast.emit('judgeVoted', {
+        vote:data.vote,
+        judge:socket.id
     });
 });
+
 
 socket.emit('serverMsg',{
 msg:'hello'

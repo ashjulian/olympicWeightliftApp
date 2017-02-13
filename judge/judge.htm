@@ -3,6 +3,7 @@
     // makes global socket variable creating a web socket connection from client to app.js
     var socket = io();
     var vote = true;
+    var txtOutput;
 
     var happy = function(e){
         //e.preventDefault();
@@ -24,14 +25,23 @@
         console.log(data.msg);
     });
 
+    socket.on('judgeVoted', function(data){
+        console.log("Judge " + data.judge + " voted " + data.vote);
+        txtOutput = document.getElementById("votes");
+        txtOutput.innerHTML = "Judge " + data.judge + " voted " + data.vote + "<br />" + txtOutput.innerHTML;
+    });
 
 </script>
 
-<button onclick="happy()">Yes</button>
+<button onclick="happy()" style="background: url(/judge/lib/yes.png) no-repeat;">Yes</button>
 <button onclick="sad()">No</button>
 <div>
 <form>
-<input type="image" onclick="happy()" src="lib/yes.png" class="img-responsive" alt="yes" />
-<input type="image" onclick="sad()" src="/judgelib/no.png" class="img-responsive" alt="no" />
+<input type="image" onclick="happy()" url="lib/yes.png" class="img-responsive" alt="yes" />
+<input type="image" onclick="sad()" url="/judge/lib/no.png" class="img-responsive" alt="no" />
 </form>
+</div>
+
+<div id="votes">
+
 </div>
