@@ -11,23 +11,71 @@
 
     <script src="http://cdn.socket.io/socket.io-1.4.5.js"></script>
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+    // makes global socket variable creating a web socket connection from client to app.js
+    var socket = io();
+    var vote = true;
+    var btnYes;
+    var btnNo;
 
-    <script>
-        var socket = io();
-        var vote = false;
-        var makeVote = function(){
-          socket.emit('happy', {
-            reason:vote
-          });
-        }
+    socket.on("connect", function(data){
+        //wire up the input tags to the objects
+        btnYes = document.getElementsByTagName('input')[0];
+        btnNo = document.getElementsByTagName('input')[1];
+        //console.log("Connected...");
+      });
+
+    var onReset = function(){
+        btnYes.disabled = false;
+        btnNo.disabled = false;
+        btnNo.src = "lib/no.png";
+        btnYes.src = "lib/yes.png";
         
-        socket.on('serverMsg', function(data){
-          console.log(data.msg);
-        });
+    }
 
-    </script>
+    var disableVoting = function(){
+        btnYes.disabled = true;
+        btnNo.disabled = true;
+        btnNo.src = "lib/noDown.png";
+        btnYes.src = "lib/yesDown.png";
+    }
 
-        <link rel="stylesheet" href="Styles.css">
+    var happy = function(e){
+        //e.preventDefault();
+        //console.log(btnYes);
+        disableVoting();
+        vote = true;
+        socket.emit('vote', {
+        vote: vote
+    });
+    }
+    var sad = function(e){
+        //e.preventDefault();
+        //sconsole.log(btnNo);
+        disableVoting();
+        vote = false;
+        socket.emit('vote', {
+        vote: vote
+    });
+    }
+    //happy();
+
+    socket.on('serverMsg', function(data){
+        console.log(data.msg);
+    });
+
+    socket.on('judgeVoted', function(data){
+        console.log("Judge " + data.judge + " voted " + data.vote);
+        //txtOutput = document.getElementById("votes");
+        //textArea = document.getElementById("textArea");
+        //txtOutput.innerHTML = "Judge " + data.judge + " voted " + data.vote + "<br />" + txtOutput.innerHTML;
+        //textArea.value = "Judge " + data.judge + " voted " + data.vote + textArea.value;
+        textArea.value = 'Judge ' + data.judge + ' voted ' + data.vote + '\\\n' + textArea.value;
+    });
+
+</script>
+
+    <link rel="stylesheet" href="Styles.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -43,11 +91,11 @@
       <div class="space"></div>
 
       <div class="col-sm-2" style="padding:1%">
-        <img src="lib/yes.png" class="img-responsive" alt="yes">
+        <input type="image" onclick="happy(); return false" src="lib/yes.png" class="img-responsive" alt="yes">
       </div>
       <div class="padding-right:10%"></div>
       <div class="col-sm-2" style="padding:1%">
-        <img src="lib/no.png" class="img-responsive" alt="no">
+        <input type="image" onclick="sad(); return false" src="lib/no.png" class="img-responsive" alt="no">
       </div>
     </div>
   </body>

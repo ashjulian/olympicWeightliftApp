@@ -8,7 +8,7 @@ var app = express();
 var server = require('http').Server(app);
 
 app.get('/', function(req, res){
-    res.sendFile(__dirname + '/judge/judge.htm');
+    res.sendFile(__dirname + '/judge/index.htm');
 });
 app.use(express.static(__dirname + '/judge'));
 // app.get('/', function(req, res){
