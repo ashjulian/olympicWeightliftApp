@@ -17,11 +17,32 @@
     var vote = true;
     var btnYes;
     var btnNo;
+    var waitDiv;
+    var voteDiv;
+    var signDiv;
+    var castedVote = false;
+    // sign in elements 
+    var signDivSignIn;
+    var signDivSignUp;
+    var signDivPassword;
+    var signDivUsername;
 
     socket.on("connect", function(data){
         //wire up the input tags to the objects
+        // voting elements
         btnYes = document.getElementsByTagName('input')[0];
         btnNo = document.getElementsByTagName('input')[1];
+        voteDiv = document.getElementById('voteDiv');
+
+        waitDiv = document.getElementById('waitDiv');
+        
+        // sign in elements
+        signDiv = document.getElementById('signDiv');
+        signDivUsername = document.getElementById('signDiv-username');
+        signDivSignIn = document.getElementById('signDiv-signIn');
+        signDivSignIn = document.getElementById('signDiv-signIn');
+        signDivSignUp = document.getElementById('signDiv-signUp');
+        signDivPassword = document.getElementById('signDiv-password');
         //console.log("Connected...");
       });
 
@@ -31,6 +52,16 @@
         btnNo.src = "lib/no.png";
         btnYes.src = "lib/yes.png";
         
+    }
+
+    var checkState = function(){
+        if(castedVote){
+            voteDiv.style.display = 'none';
+            waitDiv.style.display = 'inline-block';
+        }else{
+            voteDiv.style.display = 'inline-block';
+            waitDiv.style.display = 'none';
+        }
     }
 
     var disableVoting = function(){
@@ -43,7 +74,9 @@
     var happy = function(e){
         //e.preventDefault();
         //console.log(btnYes);
-        disableVoting();
+        //disableVoting();
+        castedVote = true;
+        checkState();
         vote = true;
         socket.emit('vote', {
         vote: vote
@@ -52,7 +85,9 @@
     var sad = function(e){
         //e.preventDefault();
         //sconsole.log(btnNo);
-        disableVoting();
+        //disableVoting();
+        castedVote = true;
+        checkState();
         vote = false;
         socket.emit('vote', {
         vote: vote
@@ -70,7 +105,7 @@
         //textArea = document.getElementById("textArea");
         //txtOutput.innerHTML = "Judge " + data.judge + " voted " + data.vote + "<br />" + txtOutput.innerHTML;
         //textArea.value = "Judge " + data.judge + " voted " + data.vote + textArea.value;
-        textArea.value = 'Judge ' + data.judge + ' voted ' + data.vote + '\\\n' + textArea.value;
+        // textArea.value = 'Judge ' + data.judge + ' voted ' + data.vote + '\\\n' + textArea.value;
     });
 
 </script>
@@ -82,22 +117,63 @@
 
   </head>
   <body>
-    <div class="row">
-      <div class="col-sm-4 information">Hello, world! I welcome you to the place that will display <br/>
-        Competitor names and information. <br/>
-        Lift weight, class, and additional information judges may need to see. <br/>
-      </div>
-
-      <div class="space"></div>
-
-      <div class="col-sm-2" style="padding:1%">
-        <input type="image" onclick="happy(); return false" src="lib/yes.png" class="img-responsive" alt="yes">
-      </div>
-      <div class="padding-right:10%"></div>
-      <div class="col-sm-2" style="padding:1%">
-        <input type="image" onclick="sad(); return false" src="lib/no.png" class="img-responsive" alt="no">
-      </div>
+    <div id="signDiv" style="display: none">
+        Username:<input id="signDiv-username"type="text"></input></br>
+        Password:<input id="signDiv-password"type="password"></input>
+        <button id="signDiv-signIn">Sign In</button>
+        <button id="signDiv-signUp">Sign Up</button>
+    
     </div>
+    
+    
+    <div id="voteDiv">
+        <div class="row">
+        <div class="col-sm-4 information">Hello, world! I welcome you to the place that will display <br/>
+            Competitor names and information. <br/>
+            Lift weight, class, and additional information judges may need to see. <br/>
+        </div>
+
+        <div class="space"></div>
+
+        <div class="col-sm-2" style="padding:1%">
+            <input type="image" onclick="happy(); return false" src="lib/yes.png" class="img-responsive" alt="yes">
+        </div>
+        <div class="padding-right:10%"></div>
+        <div class="col-sm-2" style="padding:1%">
+            <input type="image" onclick="sad(); return false" src="lib/no.png" class="img-responsive" alt="no">
+        </div>
+        </div>
+    </div>
+
+    <div id="waitDiv" style="display: none;">
+        <div class="row">
+            <div class="col-sm-offset-3 col-sm-6">
+                <table class="table">
+                    <tr>
+                        <th>Judge ID</th>
+                        <th>Judge ID</th>
+                        <th>Judge ID</th>
+                    </tr>
+                    <tr>
+                        <td><img src="lib/no.png" class="img-responsive" style="width:50%; height:auto" alt="no"></td>
+                        <td><img src="lib/yes.png" class="img-responsive" style="width:50%; height:auto" alt="yes"></td>
+                        <td><img src="lib/no.png" class="img-responsive" style="width:50%; height:auto" alt="no"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="col-sm-offset-5 col-sm-2" style="padding:1%">
+                <img src="lib/arrow.png" class="img-responsive" alt="arrow">
+            </div>
+
+            <div class="spaceMore"></div>
+
+            <div class="col-sm-6 col-sm-offset-5">
+                Awaiting Judge Decisions...
+            </div>
+        </div>
+    </div>
+    
   </body>
 </html>
 

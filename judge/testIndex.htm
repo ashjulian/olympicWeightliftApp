@@ -1,0 +1,197 @@
+
+<div id="signDiv">
+        Username:<input id="signDiv-username"type="text"></input></br>
+        Password:<input id="signDiv-password"type="password"></input>
+        <input type="button" value="Sign In" onclick="signIn(); return false" id="signDiv-signIn">
+        <input type="button" value="Sign Up" onclick="signUp(); return false" id="signDiv-signUp"> 
+</div>
+    
+    
+<div id="voteDiv" style="display: none">
+    <div class="row">
+    <div class="col-sm-4 information">Hello, world! I welcome you to the place that will display <br/>
+        Competitor names and information. <br/>
+        Lift weight, class, and additional information judges may need to see. <br/>
+    </div>
+
+    <div class="space"></div>
+
+    <div class="col-sm-2" style="padding:1%">
+        <input type="image" onclick="happy(); return false" src="lib/yes.png" class="img-responsive" alt="yes">
+    </div>
+    <div class="padding-right:10%"></div>
+    <div class="col-sm-2" style="padding:1%">
+        <input type="image" onclick="sad(); return false" src="lib/no.png" class="img-responsive" alt="no">
+    </div>
+    </div>
+</div>
+
+<div id="waitDiv" style="display: none;">
+    <div class="row">
+        <div class="col-sm-offset-3 col-sm-6">
+            <table class="table">
+                <tr>
+                    <th>Judge ID</th>
+                    <th>Judge ID</th>
+                    <th>Judge ID</th>
+                </tr>
+                <tr>
+                    <td><img src="lib/no.png" class="img-responsive" style="width:50%; height:auto" alt="no"></td>
+                    <td><img src="lib/yes.png" class="img-responsive" style="width:50%; height:auto" alt="yes"></td>
+                    <td><img src="lib/no.png" class="img-responsive" style="width:50%; height:auto" alt="no"></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="col-sm-offset-5 col-sm-2" style="padding:1%">
+            <img src="lib/arrow.png" class="img-responsive" alt="arrow">
+        </div>
+
+        <div class="spaceMore"></div>
+
+        <div class="col-sm-6 col-sm-offset-5">
+            Awaiting Judge Decisions...
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="Styles.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="http://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+    
+    // makes global socket variable creating a web socket connection from client to app.js
+    var socket = io();
+    var vote = true;
+    var btnYes;
+    var btnNo;
+    var waitDiv;
+    var voteDiv;
+    var signDiv;
+    var castedVote = false;
+    // sign in elements 
+    var signDivSignIn;
+    var signDivSignUp;
+    var signDivPassword;
+    var signDivUsername;
+
+    socket.on("connect", function(data){
+        //wire up the input tags to the objects
+        // voting elements
+        btnYes = document.getElementsByTagName('input')[0];
+        btnNo = document.getElementsByTagName('input')[1];
+        voteDiv = document.getElementById('voteDiv');
+
+        waitDiv = document.getElementById('waitDiv');
+        
+        // sign in elements
+        signDiv = document.getElementById('signDiv');
+        signDivUsername = document.getElementById('signDiv-username');
+        signDivSignIn = document.getElementById('signDiv-signIn');
+        signDivSignIn = document.getElementById('signDiv-signIn');
+        signDivSignUp = document.getElementById('signDiv-signUp');
+        signDivPassword = document.getElementById('signDiv-password');
+        //console.log("Connected...");
+    });
+
+    var signIn = function(){
+        socket.emit('signIn', {
+            username: signDivUsername.value,
+            password: signDivPassword.value
+        })
+    }
+
+    var signUp = function(){
+        socket.emit('signUp', {
+            username: signDivUsername.value,
+            password: signDivPassword.value
+        })
+    }
+
+    socket.on('signInResponse', function(data){
+        if(data.success){
+            signDiv.style.display = 'none';
+            voteDiv.style.display = 'inline-block'; 
+        }else{
+            alert('Sign in unsuccessful');
+        }
+
+    });
+
+    socket.on('signUpResponse', function(data){
+        if(data.success){
+            alert('Sign up successful');
+        }else{
+            alert('Sign up unsuccessful');
+        }
+
+    });
+
+
+    var onReset = function(){
+        btnYes.disabled = false;
+        btnNo.disabled = false;
+        btnNo.src = "lib/no.png";
+        btnYes.src = "lib/yes.png";
+        
+    }
+
+    var checkState = function(){
+        if(castedVote){
+            voteDiv.style.display = 'none';
+            waitDiv.style.display = 'inline-block';
+        }else{
+            voteDiv.style.display = 'inline-block';
+            waitDiv.style.display = 'none';
+        }
+    }
+
+    var disableVoting = function(){
+        btnYes.disabled = true;
+        btnNo.disabled = true;
+        btnNo.src = "lib/noDown.png";
+        btnYes.src = "lib/yesDown.png";
+    }
+
+    var happy = function(e){
+        //e.preventDefault();
+        //console.log(btnYes);
+        //disableVoting();
+        castedVote = true;
+        checkState();
+        vote = true;
+        socket.emit('vote', {
+        vote: vote
+    });
+    }
+    var sad = function(e){
+        //e.preventDefault();
+        //sconsole.log(btnNo);
+        //disableVoting();
+        castedVote = true;
+        checkState();
+        vote = false;
+        socket.emit('vote', {
+        vote: vote
+    });
+    }
+    //happy();
+
+    socket.on('serverMsg', function(data){
+        console.log(data.msg);
+    });
+
+    socket.on('judgeVoted', function(data){
+        console.log("Judge " + data.judge + " voted " + data.vote);
+        //txtOutput = document.getElementById("votes");
+        //textArea = document.getElementById("textArea");
+        //txtOutput.innerHTML = "Judge " + data.judge + " voted " + data.vote + "<br />" + txtOutput.innerHTML;
+        //textArea.value = "Judge " + data.judge + " voted " + data.vote + textArea.value;
+        // textArea.value = 'Judge ' + data.judge + ' voted ' + data.vote + '\\\n' + textArea.value;
+    });
+    
+</script>
+
+
