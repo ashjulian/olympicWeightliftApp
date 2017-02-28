@@ -6,7 +6,7 @@
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
-
+var judgeCount = 0;
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/judge/testIndex.htm');
 });
@@ -21,12 +21,31 @@ server.listen(8080);
 console.log("Sever Started...");
 console.log("Listening on port 8080");
 
-var Judge = function(id){
+var Judge = function(id, judge){
     var self = {
         id: id,
+        judge: judge,
         vote: ""
     }
+    Judge.list[id] = self;
+    return self;
+}
 
+Judge.list = {};
+Judge.onConnect = function(socket, userName){
+    //var assetManager = new assetManager(canvas);
+    var judge = Judge(socket.id, userName);
+    
+    socket.on('vote', function(data){
+    
+    // when vote is heard prints judges vote to consol for now
+    console.log('Judge ' + socket.id + " voted " + data.vote);
+    //emit the vote back to all connectec sockets
+    socket.broadcast.emit('judgeVoted', {
+        vote:data.vote,
+        judge:socket.id
+    });      
+    });
 }
 
 // ----------------------------------------------------------------------- //
@@ -68,9 +87,15 @@ io.sockets.on('connection', function(socket){
 // temporary form of Id'ing the client. we will eventually do a login system.
 socket.id = Math.floor(10*Math.random());
 
+
 socket.on('signIn', function(data){
-            if(isValidPassword(data)){
+            if(isValidPassword(data) && judgeCount <= 3){
                 socket.emit('signInResponse', {success:true});
+                //var judge = new Judge(socket.id);
+                judgeCount ++;
+                
+                //Judge.onConnect(socket.id, data.username);
+
             }else{
                 socket.emit('signInResponse', {success:false});
             }
@@ -88,9 +113,6 @@ socket.on('signIn', function(data){
             socket.emit('signUpResponse', {success:false});
         }
     });
-
-
-
 
 socket.on('vote', function(data){
     
