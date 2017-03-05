@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Competition Participants Sheet</title>
+
+    <script src="http://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+
+    <link rel="stylesheet" href="judge/Styles.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script type="text/javascript" src="Code.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  </head>
+
+  <body>
+      <div class="container">
+            <div class="row">
+                <div class="col-sm-12" style="text-align:center;">
+                    <h2>Competition Participants</h2>
+                    <br/>
+                </div>
+
+                <div class="col-sm-12">
+                    <div id="addParticipant" style="display:none; padding-bottom:5%;">
+                        <h3 style="text-align:center;">Add A New Participant</h3>
+                        <br/>
+                        <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-sm-offset-2 col-sm-2" for="newName">Competitor Name:</label>
+                            <div class="col-sm-6">
+                            <input type="text" class="form-control" id="newName" placeholder="Enter name...">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-offset-2 col-sm-2" for="newWeight">Competitor Weight:</label>
+                            <div class="col-sm-6">
+                            <input type="text" class="form-control" id="newWeight" placeholder="Enter weight...">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-offset-2 col-sm-2" for="newClass">Competitor Class:</label>
+                            <div class="col-sm-6">
+                            <input type="text" class="form-control" id="newClass" placeholder="Enter class...">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-4 col-sm-6">
+                            <button type="submit" class="btn btn-default" id="btnAddEntry">Add Entry</button>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+
+                    <div id="spreadsheet">
+                        <div class="col-sm-1 col-sm-offset-11" style="text-align:center;">
+                            <button type="button" class="btn btn-default btn-lg">
+                                <span class="glyphicon glyphicon-print" aria-hidden="true"></span> Print Results
+                            </button>
+                            <br/>
+                            <br/>
+                        </div>
+
+                        <table class="table" id="tableData">
+                            <tr>
+                                <th>Name </th>
+                                <th>Weight </th>
+                                <th>Class </th>
+                                <th>Lift 1 </th>
+                                <th>Lift 2 </th>
+                                <th>Lift 3 </th>
+                            </tr>
+                            <tr id="spreadsheetData" style="display:none;">
+                                <td><input type="text" style="border:none;" name="name" value="Blah"></td>
+                                <td><input type="text" style="border:none;" name="weight" value="Blah"></td>
+                                <td><input type="text" style="border:none;" name="class" value="Blah"></td>
+                                <td><input type="text" style="border:none;" name="lift1" value="Blah"></td>
+                                <td><input type="text" style="border:none;" name="lift2" value="Blah"></td>
+                                <td><input type="text" style="border:none;" name="lift3" value="Blah"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="col-sm-12" style="text-align:center;">
+                    <br/><br/><br/>
+                    <button type="button" class="btn btn-default btn-lg" id="btnAdd">
+                        <span class="glyphicon glyphicon-plus" style="color:limegreen;" aria-hidden="true"></span> Add Competitor
+                    </button>
+
+                    <button type="button" class="btn btn-default btn-lg" id="btnRemove">
+                        <span class="glyphicon glyphicon-minus" style="color:red;" aria-hidden="true"></span> Remove Competitor
+                    </button>
+
+                    <button type="button" class="btn btn-default btn-lg">
+                        <span class="glyphicon glyphicon-refresh" style="color:cornflowerblue;" aria-hidden="true"></span> Reset Competition
+                    </button>
+                </div>
+
+                <div class="col-sm-12" style="text-align:center; padding:1%;">
+                    <button type="button" class="btn btn-default btn-lg" id="btnTimerGo" style="color:red;">
+                        <span class="glyphicon glyphicon-play" style="color:red;" aria-hidden="true"></span> Start Timer
+                    </button>
+
+                    <button type="button" class="btn btn-default btn-lg" id="btnTimerPause">
+                        <span class="glyphicon glyphicon-pause" aria-hidden="true"></span> Pause Timer
+                    </button>
+
+                    <button type="button" class="btn btn-default btn-lg" id="btnTimerResume" style="display:none;">
+                        <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Resume Timer
+                    </button>
+
+                    <button type="button" class="btn btn-default btn-lg" id="btnTimerStop">
+                        <span class="glyphicon glyphicon-stop" aria-hidden="true"></span> Stop Timer
+                    </button>
+                </div>
+
+                <div class="col-sm-12" style="text-align:center; color:red;">
+                    <br/>
+                    <h2 id="timer">Timer: 0:00</h2>
+                </div>
+            </div>
+      </div>
+  </body>
+</html>
+
+    
