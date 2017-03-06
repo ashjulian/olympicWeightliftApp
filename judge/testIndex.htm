@@ -36,14 +36,14 @@
                     <th>Judge ID</th>
                 </tr>
                 <tr>
-                    <td><img src="lib/no.png" class="img-responsive" style="width:50%; height:auto" alt="no"></td>
-                    <td><img src="lib/yes.png" class="img-responsive" style="width:50%; height:auto" alt="yes"></td>
-                    <td><img src="lib/no.png" class="img-responsive" style="width:50%; height:auto" alt="no"></td>
+                    <td><img id="judge1" src="lib/yesDown.png" class="img-responsive" style="width:50%; height:auto" alt="no"></td>
+                    <td><img id="judge2" src="lib/yesDown.png" class="img-responsive" style="width:50%; height:auto" alt="yes"></td>
+                    <td><img id="judge3" src="lib/yesDown.png" class="img-responsive" style="width:50%; height:auto" alt="no"></td>
                 </tr>
             </table>
         </div>
 
-        <div class="col-sm-offset-5 col-sm-2" style="padding:1%">
+        <div id="arrow" class="col-sm-offset-5 col-sm-2" style="padding:1%; display: none">
             <img src="lib/arrow.png" class="img-responsive" alt="arrow">
         </div>
 
@@ -77,6 +77,8 @@
     var signDivPassword;
     var signDivUsername;
 
+    var judgeNumber = "";
+
     socket.on("connect", function(data){
         //wire up the input tags to the objects
         // voting elements
@@ -86,6 +88,8 @@
 
         waitDiv = document.getElementById('waitDiv');
         
+        arrowDiv = document.getElementById('arrow');
+
         // sign in elements
         signDiv = document.getElementById('signDiv');
         signDivUsername = document.getElementById('signDiv-username');
@@ -120,6 +124,10 @@
 
     });
 
+    socket.on('username', function(data){
+        judgeNumber = data.username;
+    });
+
     socket.on('signUpResponse', function(data){
         if(data.success){
             alert('Sign up successful');
@@ -129,6 +137,10 @@
 
     });
 
+    socket.on('decisionMade', function(data){
+        //$("#arrow").toggle();
+        arrowDiv.style.display = 'block';
+    });
 
     var onReset = function(){
         btnYes.disabled = false;
@@ -185,11 +197,33 @@
 
     socket.on('judgeVoted', function(data){
         console.log("Judge " + data.judge + " voted " + data.vote);
-        //txtOutput = document.getElementById("votes");
-        //textArea = document.getElementById("textArea");
-        //txtOutput.innerHTML = "Judge " + data.judge + " voted " + data.vote + "<br />" + txtOutput.innerHTML;
-        //textArea.value = "Judge " + data.judge + " voted " + data.vote + textArea.value;
-        // textArea.value = 'Judge ' + data.judge + ' voted ' + data.vote + '\\\n' + textArea.value;
+        
+        if(data.judge === "judge1"){
+            if(data.vote){
+                $("#judge1").attr("src", "lib/yes.png");
+            }else if(!data.vote){
+                $("#judge1").attr("src", "lib/no.png");
+            }else{
+                $("#judge1").attr("src", "lib/noDown.png");
+            }    
+        }else if(data.judge === "judge2"){
+            if(data.vote){
+                $("#judge2").attr("src", "lib/yes.png");
+            }else if(!data.vote){
+                $("#judge2").attr("src", "lib/no.png");
+            }else{
+                $("#judge2").attr("src", "lib/noDown.png");
+            }  
+        }else if(data.judge === "judge3"){
+            if(data.vote){
+                $("#judge3").attr("src", "lib/yes.png");
+            }else if(!data.vote){
+                $("#judge3").attr("src", "lib/no.png");
+            }else{
+                $("#judge3").attr("src", "lib/noDown.png");
+            }  
+        }
+ 
     });
     
 </script>
