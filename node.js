@@ -6,6 +6,9 @@
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
+
+var myJudge = null;
+
 var judgeCount = 0;
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/judge/testIndex.htm');
@@ -35,17 +38,17 @@ Judge.list = {};
 Judge.onConnect = function(socket, userName){
     //var assetManager = new assetManager(canvas);
     var judge = Judge(socket.id, userName);
+    return judge;
+    // socket.on('vote', function(data){
     
-    socket.on('vote', function(data){
-    
-    // when vote is heard prints judges vote to consol for now
-    console.log('Judge ' + socket.id + " voted " + data.vote);
-    //emit the vote back to all connectec sockets
-    socket.broadcast.emit('judgeVoted', {
-        vote:data.vote,
-        judge:socket.id
-    });      
-    });
+    // // when vote is heard prints judges vote to consol for now
+    // console.log('Judge ' + socket.id + " voted " + data.vote);
+    // //emit the vote back to all connectec sockets
+    // socket.broadcast.emit('judgeVoted', {
+    //     vote:data.vote,
+    //     judge:socket.id
+    // });      
+    // });
 }
 
 // ----------------------------------------------------------------------- //
@@ -84,66 +87,76 @@ var VOTE_LIST = [];
 var io = require('socket.io')(server, {});
 io.sockets.on('connection', function(socket){
 
-// temporary form of Id'ing the client. we will eventually do a login system.
-socket.id = Math.floor(10*Math.random());
+    // temporary form of Id'ing the client. we will eventually do a login system.
+    socket.id = Math.floor(10*Math.random());
+    
 
-
-socket.on('signIn', function(data){
-            if(isValidPassword(data) && judgeCount <= 3){
-                socket.emit('signInResponse', {success:true});
-                //var judge = new Judge(socket.id);
-                judgeCount ++;
-                
-                //Judge.onConnect(socket.id, data.username);
-
-            }else{
-                socket.emit('signInResponse', {success:false});
-            }
+    socket.on('signIn', function(data){
+                if(isValidPassword(data) && judgeCount <= 3){
+                    socket.emit('signInResponse', {success:true});
+                    socket.emit('username', {user:data.username});
+                    socket.id = data.username;
+                    console.log();
+                    //var judge = new Judge(socket.id);
+                    judgeCount ++;
+                    var judge = Judge.onConnect(socket.id, data.username);
+                    console.log("SOCKET - signed in with socket " + socket.id + " username " + data.username + " Judge count" + judgeCount);
+                    console.log("Judge - signed in with ID " + socket.id + " username " + judge.judge + " Judge count" + judgeCount);
+                }else{
+                    socket.emit('signInResponse', {success:false});
+                }
     });
 
     socket.on('signUp', function(data){
-        if((data.username !== '') && (data.password !== '')){
-            if(isUsernameTaken(data)){
-                socket.emit('signUpResponse', {success:false});
+            if((data.username !== '') && (data.password !== '')){
+                if(isUsernameTaken(data)){
+                    socket.emit('signUpResponse', {success:false});
+                }else{
+                    addUser(data);
+                    socket.emit('signUpResponse', {success:true});
+                }
             }else{
-                addUser(data);
-                socket.emit('signUpResponse', {success:true});
+                socket.emit('signUpResponse', {success:false});
             }
-        }else{
-            socket.emit('signUpResponse', {success:false});
-        }
     });
 
-socket.on('vote', function(data){
-    
-    for(var i in VOTE_LIST){
-        var vote = VOTE_LIST[i];
-        if(data.vote === vote.vote){
-            console.log('Decision Made');
-            VOTE_LIST.length = 0;
-        }else{
+    socket.on('vote', function(data){
+        console.log(data.username);
+        if(VOTE_LIST.length === 0){
             VOTE_LIST.push({
-            judge:socket.id,
-            vote:data.vote,   
-            });
+                judge:socket.id,
+                vote:data.vote,
+                username:data.judge   
+                });
+        }else{
+            for(var i in VOTE_LIST){
+                var vote = VOTE_LIST[i];
+                if(data.vote === vote.vote){
+                    console.log('Decision Made');
+                    socket.broadcast.emit('decisionMade', {decision:true});
+                    VOTE_LIST.length = 0;
+                }else{
+                    VOTE_LIST.push({
+                    judge:socket.id,
+                    vote:data.vote 
+                    });
+                }
+            }
         }
-    }
 
-    // when vote is heard prints judges vote to consol for now
-    console.log('Judge ' + socket.id + " voted " + data.vote);
-    //emit the vote back to all connectec sockets
-    socket.broadcast.emit('judgeVoted', {
-        vote:data.vote,
-        judge:socket.id
+        // when vote is heard prints judges vote to consol for now
+        console.log('Judge ' + socket.id + " voted " + data.vote);
+        //emit the vote back to all connectec sockets
+        socket.broadcast.emit('judgeVoted', {
+            vote:data.vote,
+            judge:socket.id
+        });
     });
-});
 
 
-socket.emit('serverMsg',{
-msg:'Connected...'
-});
-
-
+    socket.emit('serverMsg',{
+    msg:'Connected...'
+    });
 
 
 });
