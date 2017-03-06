@@ -51,14 +51,14 @@
                         </div>
                         <div class="form-group">
                             <div class="col-sm-offset-4 col-sm-6">
-                            <button type="submit" class="btn btn-default" id="btnAddEntry">Add Entry</button>
+                            <button type="button" class="btn btn-default" id="btnAddEntry">Add Entry</button>
                             </div>
                         </div>
                         </form>
                     </div>
 
                     <div id="spreadsheet">
-                        <div class="col-sm-1 col-sm-offset-11" style="text-align:center;">
+                        <div class="col-sm-1 col-sm-offset-10" style="text-align:center;">
                             <button type="button" class="btn btn-default btn-lg">
                                 <span class="glyphicon glyphicon-print" aria-hidden="true"></span> Print Results
                             </button>
@@ -67,25 +67,31 @@
                         </div>
 
                         <table class="table" id="tableData">
-                            <tr>
-                                <th>Name </th>
-                                <th>Weight </th>
-                                <th>Class </th>
-                                <th>Lift 1 </th>
-                                <th>Lift 2 </th>
-                                <th>Lift 3 </th>
-                            </tr>
-                            <tr id="spreadsheetData" style="display:none;">
-                                <td><input type="text" style="border:none;" name="name" value="Blah"></td>
-                                <td><input type="text" style="border:none;" name="weight" value="Blah"></td>
-                                <td><input type="text" style="border:none;" name="class" value="Blah"></td>
-                                <td><input type="text" style="border:none;" name="lift1" value="Blah"></td>
-                                <td><input type="text" style="border:none;" name="lift2" value="Blah"></td>
-                                <td><input type="text" style="border:none;" name="lift3" value="Blah"></td>
-                            </tr>
+                            <thead>
+                                <tr>
+                                    <th>Name </th>
+                                    <th>Weight </th>
+                                    <th>Class </th>
+                                    <th>Lift 1 </th>
+                                    <th>Lift 2 </th>
+                                    <th>Lift 3 </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="spreadsheetData" style="display:none;">
+                                    <td><input type="text" style="border:none;" name="name" value="Blah"></td>
+                                    <td><input type="text" style="border:none;" name="weight" value="Blah"></td>
+                                    <td><input type="text" style="border:none;" name="class" value="Blah"></td>
+                                    <td><input type="text" style="border:none;" name="lift1" value="Blah"></td>
+                                    <td><input type="text" style="border:none;" name="lift2" value="Blah"></td>
+                                    <td><input type="text" style="border:none;" name="lift3" value="Blah"></td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
+
+                <div id="feedback"></div>
 
                 <div class="col-sm-12" style="text-align:center;">
                     <br/><br/><br/>
@@ -97,7 +103,7 @@
                         <span class="glyphicon glyphicon-minus" style="color:red;" aria-hidden="true"></span> Remove Competitor
                     </button>
 
-                    <button type="button" class="btn btn-default btn-lg">
+                    <button type="button" class="btn btn-default btn-lg" id="btnReset">
                         <span class="glyphicon glyphicon-refresh" style="color:cornflowerblue;" aria-hidden="true"></span> Reset Competition
                     </button>
                 </div>

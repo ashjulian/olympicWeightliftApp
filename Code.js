@@ -16,22 +16,45 @@ $(document).ready(function () {
     $("#btnTimerPause").prop('disabled', true);
     $("#btnTimerStop").prop('disabled', true);
 
+    // force data to scroll after getting too large
+    document.getElementById("spreadsheet").style.height='350px';
+    document.getElementById("spreadsheet").style.overflowY='auto';
+    document.getElementById("spreadsheet").style.overflowX='hidden';
+
+    populateMe();
+
     // ----------------------------------------------------------- event handlers
 
     function onResponse(result, textStatus, xmlhttp) {
+
         // grab the JSON response from the server
         json = JSON.parse(xmlhttp.responseText);
 
-        // grab the order orderCount
-        orderCount = json.orders.length;
-        if (orderCount > 0) {
-            reportMe();
-        } else {
-            $("#content div:last").html("No orders submitted...");
-        }
+            // loop through all participants in participants array of JSON
+            for (var i = 0; i<json.participants.length; i++) {
+                var partsData = json.participants[i];
 
-        //console.log(xmlhttp.responseText);
-        //console.log("response received!");
+                // clone the table template
+                var spreadTemp = $("#spreadsheetData").clone();
+                // change the id 
+                $(spreadTemp).prop("id", "spreadSheetData", i);
+
+                // populate the template
+                $(spreadTemp).find("td:eq(0) > input").val(partsData.name);
+                $(spreadTemp).find("td:eq(1) > input").val(partsData.weight);
+                $(spreadTemp).find("td:eq(2) > input").val(partsData.weightClass);
+                $(spreadTemp).children("td").eq(3).find(":input").val(partsData.lift1);
+                $(spreadTemp).children("td").eq(4).find(":input").val(partsData.lift2);
+                $(spreadTemp).children("td").eq(5).find(":input").val(partsData.lift3);
+
+                 // make orderNode visible
+                $(spreadTemp).css("display", "table-row");
+                // append the orderNode to the #output div
+                $("#tableData").append(spreadTemp);
+            }
+
+        console.log(xmlhttp.responseText);
+        console.log("response received!");
 
     }
 
@@ -71,7 +94,7 @@ $(document).ready(function () {
             var sendJSON = {
                 name: $("#newName").val(),
                 weight: $("#newWeight").val(),
-                class: $("#newClass").val(),
+                weightClass: $("#newClass").val(),
                 lift1: "--",
                 lift2: "--",
                 lift3: "--"
@@ -79,35 +102,60 @@ $(document).ready(function () {
 
             console.log(sendJSON);
 
-        //     // convert to string (serializing)
-        //     var sendString = JSON.stringify(sendJSON);
+            // convert to string (serializing)
+            var sendString = JSON.stringify(sendJSON);
 
-        //     console.log(sendString);
+            console.log(sendString);
 
-        //     // send the request with JSON string to server
-        //     $.ajax({
-        //         type: "POST",
-        //         url: submitScript,
-        //         contentType: "application/JSON",
-        //         data: sendString,
-        //         success: onResponse,
-        //         error: onError
-        //     });
-        // }
-    }
+            // send the request with JSON string to server
+            $.ajax({
+                type: "POST",
+                url: submitScript,
+                contentType: "application/JSON",
+                data: sendString,
+                success: onResponse,
+                error: onError
+            });
+        }
+
+    function populateMe() {
+       
+            $("tbody").children("tr:visible").remove();
+
+            // send request to get pizza orders via JSON
+            $.ajax({
+                type: "GET",
+                url: retrieveScript,
+                contentType: "application/json",
+                success: onResponse,
+                error: onError
+            });
+
+
+        }
 
 
 
     // ----------------------------------------------------------- JQuery Implementation
     $("#btnAdd").click(function(){
-        // hide the spreadsheet and display the add entry screen
-        $("#spreadsheet").hide();
-        $("#addParticipant").show();
+        if ($("#addParticipant").is(":visible")){
+            // hide the add entry and display spreadsheet screen
+            $("#spreadsheet").show();
+            $("#addParticipant").hide();
+        } else {
+            // hide the spreadsheet and display the add entry screen
+            $("#spreadsheet").hide();
+            $("#addParticipant").show();
+        }
     });
 
     $("#btnRemove").click(function(){
         $("#addParticipant").hide();
         $("#spreadsheet").show();
+    });
+
+    $("#btnReset").click(function(){
+        populateMe();
     });
 
     $("#btnAddEntry").click(function(){
@@ -116,25 +164,11 @@ $(document).ready(function () {
         $("#spreadsheet").show();
         $("#addParticipant").hide();
 
-        // // clone the table template
-        // var spreadTemp = $("#spreadsheetData").clone();
-        // // change the id 
-        // $(spreadTemp).prop("id", "spreadSheetData", 1);
-
-        // // populate the template
-        // $(spreadTemp).find("td:eq(0) > input").val("This is a name!");
-        // $(spreadTemp).find("td:eq(1) > input").val("This is a weight!");
-        // $(spreadTemp).find("td:eq(2) > input").val("This is a class!");
-        // $(spreadTemp).children("td").eq(3).find(":input").val("This is lift1!");
-        // $(spreadTemp).children("td").eq(4).find(":input").val("This is a lift2!");
-        // $(spreadTemp).children("td").eq(5).find(":input").val("This is a lift3!");
-
         onNewEntry();
+        populateMe();
 
-        // // make orderNode visible
-        // $(spreadTemp).css("display", "table-row");
-        // // append the orderNode to the #output div
-        // $("#tableData").append(spreadTemp);
+        // clear out the text boxes
+        $("#addParticipant").find("input").val("");
 
     });
 
