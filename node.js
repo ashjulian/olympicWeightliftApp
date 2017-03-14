@@ -60,7 +60,7 @@ var USERS = {
     "judge1":"123",
     "judge2":"456",
     "judge3":"789",
-    "coordinator":"1010",
+    "coordinator":"123",
 }
 
 var isValidPassword = function(data){
@@ -93,18 +93,33 @@ io.sockets.on('connection', function(socket){
 
     socket.on('signIn', function(data){
                 if(isValidPassword(data) && judgeCount <= 3){
-                    socket.emit('signInResponse', {success:true});
-                    socket.emit('username', {user:data.username});
-                    socket.id = data.username;
-                    console.log();
-                    //var judge = new Judge(socket.id);
-                    judgeCount ++;
-                    var judge = Judge.onConnect(socket.id, data.username);
-                    console.log("SOCKET - signed in with socket " + socket.id + " username " + data.username + " Judge count" + judgeCount);
-                    console.log("Judge - signed in with ID " + socket.id + " username " + judge.judge + " Judge count" + judgeCount);
+                    if(data.username === 'coordinator'){
+                        console.log("coordinator signed on");
+                        //return app.redirect('/spreadsheet.html');
+                        socket.emit('signInResponse', {success:true, judge:false});
+                        socket.emit('username', {user:data.username});
+                        //socket.id = data.username;
+                        // app.get('/', function(req, res){
+                        //     res.redirect(__dirname + '/spreadsheet.html');
+                        //     res.statusCode = 302; 
+                        //     res.setHeader("Location", "/spreadsheet.html");
+                        //     res.end();
+                        //});
+                    }else{
+                    
+                        socket.emit('signInResponse', {success:true, judge:true});
+                        socket.emit('username', {user:data.username});
+                        socket.id = data.username;
+                        console.log();
+                        //judgeCount ++;
+                        var judge = Judge.onConnect(socket.id, data.username);
+                        console.log("SOCKET - signed in with socket " + socket.id + " username " + data.username + " Judge count" + judgeCount);
+                        console.log("Judge - signed in with ID " + socket.id + " username " + judge.judge + " Judge count" + judgeCount);
+                    }
                 }else{
                     socket.emit('signInResponse', {success:false});
                 }
+                
     });
 
     socket.on('signUp', function(data){
@@ -133,7 +148,7 @@ io.sockets.on('connection', function(socket){
                 var vote = VOTE_LIST[i];
                 if(data.vote === vote.vote){
                     console.log('Decision Made');
-                    socket.broadcast.emit('decisionMade', {decision:true});
+                    socket.broadcast.emit('decisionMade', {decision:true, answer:data.vote});
                     VOTE_LIST.length = 0;
                 }else{
                     VOTE_LIST.push({
