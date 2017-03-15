@@ -18,13 +18,22 @@ $(document).ready(function () {
         var coordinatorDiv = null;
         var arrowDiv = null;
 
-        var judgeNumber = "";
+        var agent = "";
+
+        var voteDivClean = null;
+        var waitDivClean = null;       
+
+
+
+        /***************************** NODE RECEIVERS ******************************/
+
 
         socket.on("connect", function(data){
             //wire up the input tags to the objects
             // voting elements
-            btnYes = document.getElementsByTagName('input')[0];
-            btnNo = document.getElementsByTagName('input')[1];
+
+            //btnYes = document.getElementsByTagName('input')[0];
+            //btnNo = document.getElementsByTagName('input')[1];
             voteDiv = document.getElementById('voteDiv');
 
             waitDiv = document.getElementById('waitDiv');
@@ -40,34 +49,17 @@ $(document).ready(function () {
             signDivPassword = document.getElementById('signDiv-password');
             coordinatorDiv = document.getElementById('coordinatorDiv');
             //console.log("Connected...");
+            enableVoting(false);
         });
-
-        var signIn = function(){
-            socket.emit('signIn', {
-                username: signDivUsername.value,
-                password: signDivPassword.value
-            })
-        }
-
-        $("#signIn").click(function(){
-            socket.emit('signIn', {
-                username: signDivUsername.value,
-                password: signDivPassword.value
-            })
-        });
-
-        var signUp = function(){
-            socket.emit('signUp', {
-                username: signDivUsername.value,
-                password: signDivPassword.value
-            })
-        }
 
         socket.on('signInResponse', function(data){
             if(data.success){
                 if(data.judge){
                     $('#signDiv').toggle();
                     $('#voteDiv').toggle();
+                    voteDivClean = $('#voteDiv').clone(true);
+                    waitDivClean = $('#waitDiv').clone(true);
+                    
                     //$('#coordinatorDiv').toggle();
                     //signDiv.style.display = 'none';
                     //voteDiv.style.display = 'inline-block';
@@ -86,11 +78,11 @@ $(document).ready(function () {
         });
 
         socket.on('username', function(data){
-            judgeNumber = data.user;
-            if(data.username === 'coordinator'){
+            agent = data.user;
+            // if(agent === 'coordinator'){
                 
-                window.location.href("../spreadsheet.html");
-            }
+            //     window.location.href("../spreadsheet.html");
+            // }
         });
 
         socket.on('signUpResponse', function(data){
@@ -102,27 +94,95 @@ $(document).ready(function () {
 
         });
 
-        socket.on('decisionMade', function(data){
-            //$("#arrow").toggle();
-            arrowDiv.style.display = 'block';
+
+        socket.on('serverMsg', function(data){
+            console.log(data.msg);
         });
 
-        var onReset = function(){
-            btnYes.disabled = false;
-            btnNo.disabled = false;
-            btnNo.src = "lib/no.png";
-            btnYes.src = "lib/yes.png";
+        socket.on('judgeVoted', function(data){
+            console.log("Judge " + data.judge + " voted " + data.vote);
+            setVote(data);
+    
+        });
+
+        socket.on('judgesBegin', function(data){
+            if(data.started){
+                enableVoting(true);
+            }else{
+                enableVoting(false);
+            }
+
+        });
+
+        socket.on('decisionMade', function(data){
+            if(agent === "coordinator"){
+                pauseTimer();
+            }else{
+                $("#arrow").toggle();
+            }
             
+        });
+
+        socket.on('reset', function(data){
+            initialState();
+        });
+
+        socket.on('wipeJudges', function(data){
+            if(data.wipe){
+                initialState();
+                castedVote = false;
+                checkState();
+            }
+        });
+
+        /***************************** PRIVATE METHODS ******************************/
+
+
+        // var signIn = function(){
+        //     socket.emit('signIn', {
+        //         username: signDivUsername.value,
+        //         password: signDivPassword.value
+        //     })
+        // }
+
+        $("#signIn").click(function(){
+            socket.emit('signIn', {
+                username: signDivUsername.value,
+                password: signDivPassword.value
+            })
+        });
+
+        var signUp = function(){
+            socket.emit('signUp', {
+                username: signDivUsername.value,
+                password: signDivPassword.value
+            })
         }
 
+        var initialState = function(){
+            console.log("reached InitialState");
+            $('#voteDiv').replaceWith(voteDivClean);
+            $('#waitDiv').replaceWith(waitDivClean);
+            voteDivClean = $('#voteDiv').clone(true);
+            waitDivClean = $('#waitDiv').clone(true);
+            $('#voteDiv').toggle();
+            $('#waitDiv').toggle();
+            enableVoting(false);
+        }
+
+
         var checkState = function(){
-            if(castedVote){
-                voteDiv.style.display = 'none';
-                waitDiv.style.display = 'inline-block';
+            $('#voteDiv').toggle();
+            $('#waitDiv').toggle();
+            /*if(castedVote){
+                $('#voteDiv').toggle();
+                $('#waitDiv').toggle();
+                //voteDiv.style.display = 'none';
+                //waitDiv.style.display = 'inline-block';
             }else{
-                voteDiv.style.display = 'inline-block';
-                waitDiv.style.display = 'none';
-            }
+                //voteDiv.style.display = 'inline-block';
+                //waitDiv.style.display = 'none';
+            }*/
         }
 
         var setVote = function (data){
@@ -154,26 +214,20 @@ $(document).ready(function () {
 
         }
 
-        var disableVoting = function(){
-            btnYes.disabled = true;
-            btnNo.disabled = true;
-            btnNo.src = "lib/noDown.png";
-            btnYes.src = "lib/yesDown.png";
+        var enableVoting = function(yes){
+            if(yes){
+                $("#btnYes").prop('disabled', false);
+                $("#btnNo").prop('disabled', false);
+                $("#btnYes").attr('src', 'lib/yes.png');
+                $("#btnNo").attr('src', 'lib/no.png');
+            }else{
+                $("#btnYes").prop('disabled', true);
+                $("#btnNo").prop('disabled', true);
+                $("#btnYes").attr('src', 'lib/yesDown.png');
+                $("#btnNo").attr('src', 'lib/noDown.png');
+            }
         }
-        /********************* TO BE REMOVED
-        var happy = function(e){
-            //e.preventDefault();
-            //console.log(btnYes);
-            //disableVoting();
-            castedVote = true;
-            checkState();
-            vote = true;
-            socket.emit('vote', {
-            vote: vote
-        });
-    }
-    */
-    
+
         $('#btnYes').click(function(){
             castedVote = true;
             checkState();
@@ -192,29 +246,6 @@ $(document).ready(function () {
             });
         });
 
-        /************* TO BE REMOVED
-        var sad = function(e){
-            //e.preventDefault();
-            //sconsole.log(btnNo);
-            //disableVoting();
-            castedVote = true;
-            checkState();
-            vote = false;
-            socket.emit('vote', {
-            vote: vote
-        });
-        }
-        */
-
-        socket.on('serverMsg', function(data){
-            console.log(data.msg);
-        });
-
-        socket.on('judgeVoted', function(data){
-            console.log("Judge " + data.judge + " voted " + data.vote);
-            setVote(data);
-    
-        });
 
 
 
@@ -353,6 +384,12 @@ $(document).ready(function () {
 
         }
 
+        function pauseTimer(){
+            // pause the timer and switch the button to resume
+            paused = true;
+            $("#btnTimerPause").hide();
+            $("#btnTimerResume").show();
+        }
 
 
     // ----------------------------------------------------------- JQuery Implementation
@@ -401,6 +438,7 @@ $(document).ready(function () {
         $("#btnTimerGo").prop('disabled', true);
         $("#btnTimerPause").prop('disabled', false);
         $("#btnTimerStop").prop('disabled', false);
+        socket.emit('timerStart', {started:true});
     });
 
     $("#btnTimerPause").click(function(){
@@ -418,6 +456,7 @@ $(document).ready(function () {
         $("#btnTimerGo").prop('disabled', false);
         $("#btnTimerPause").prop('disabled', true);
         $("#btnTimerStop").prop('disabled', true);
+        socket.emit('coordinatorStopped', {timerStopped:true});
     });
 
     $("#btnTimerResume").click(function(){
