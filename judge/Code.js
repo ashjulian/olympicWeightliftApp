@@ -4,48 +4,37 @@ $(document).ready(function () {
         // makes global socket variable creating a web socket connection from client to app.js
         var socket = io();
         var vote = true;
-        var btnYes;
-        var btnNo;
-        var waitDiv;
-        var voteDiv;
-        var signDiv;
         var castedVote = false;
         // sign in elements 
-        var signDivSignIn;
-        var signDivSignUp;
-        var signDivPassword;
+        var signDivPassword = null;;
         var signDivUsername = null;
         var coordinatorDiv = null;
-        var arrowDiv = null;
+        //var arrowDiv = null;
+
+
 
         var agent = "";
 
         var voteDivClean = null;
         var waitDivClean = null;       
 
-
-
         /***************************** NODE RECEIVERS ******************************/
-
 
         socket.on("connect", function(data){
             //wire up the input tags to the objects
-            // voting elements
 
-            //btnYes = document.getElementsByTagName('input')[0];
-            //btnNo = document.getElementsByTagName('input')[1];
-            voteDiv = document.getElementById('voteDiv');
+            //voteDiv = document.getElementById('voteDiv');
 
-            waitDiv = document.getElementById('waitDiv');
+            //waitDiv = document.getElementById('waitDiv');
             
-            arrowDiv = document.getElementById('arrow');
+            //arrowDiv = document.getElementById('arrow');
 
             // sign in elements
-            signDiv = document.getElementById('signDiv');
+            //signDiv = document.getElementById('signDiv');
             signDivUsername = document.getElementById('signDiv-username');
-            signDivSignIn = document.getElementById('signDiv-signIn');
-            signDivSignIn = document.getElementById('signDiv-signIn');
-            signDivSignUp = document.getElementById('signDiv-signUp');
+            // signDivSignIn = document.getElementById('signDiv-signIn');
+            // signDivSignIn = document.getElementById('signDiv-signIn');
+            // signDivSignUp = document.getElementById('signDiv-signUp');
             signDivPassword = document.getElementById('signDiv-password');
             coordinatorDiv = document.getElementById('coordinatorDiv');
             //console.log("Connected...");
@@ -59,30 +48,17 @@ $(document).ready(function () {
                     $('#voteDiv').toggle();
                     voteDivClean = $('#voteDiv').clone(true);
                     waitDivClean = $('#waitDiv').clone(true);
-                    
-                    //$('#coordinatorDiv').toggle();
-                    //signDiv.style.display = 'none';
-                    //voteDiv.style.display = 'inline-block';
-                    //coordinatorDiv.style.display = 'none'; 
                 }else {
                     $('#signDiv').toggle();
                     $('#coordinatorDiv').toggle();
-                    // coordinatorDiv.style.display = 'inline-block';
-                    // signDiv.style.display = 'none';
-                    // voteDiv.style.display = 'none'; 
                 }
             }else{
                 alert('Sign in unsuccessful');
             }
-
         });
 
         socket.on('username', function(data){
             agent = data.user;
-            // if(agent === 'coordinator'){
-                
-            //     window.location.href("../spreadsheet.html");
-            // }
         });
 
         socket.on('signUpResponse', function(data){
@@ -91,9 +67,7 @@ $(document).ready(function () {
             }else{
                 alert('Sign up unsuccessful');
             }
-
         });
-
 
         socket.on('serverMsg', function(data){
             console.log(data.msg);
@@ -102,7 +76,6 @@ $(document).ready(function () {
         socket.on('judgeVoted', function(data){
             console.log("Judge " + data.judge + " voted " + data.vote);
             setVote(data);
-    
         });
 
         socket.on('judgesBegin', function(data){
@@ -111,7 +84,6 @@ $(document).ready(function () {
             }else{
                 enableVoting(false);
             }
-
         });
 
         socket.on('decisionMade', function(data){
@@ -120,7 +92,6 @@ $(document).ready(function () {
             }else{
                 $("#arrow").toggle();
             }
-            
         });
 
         socket.on('reset', function(data){
@@ -137,27 +108,12 @@ $(document).ready(function () {
 
         /***************************** PRIVATE METHODS ******************************/
 
-
-        // var signIn = function(){
-        //     socket.emit('signIn', {
-        //         username: signDivUsername.value,
-        //         password: signDivPassword.value
-        //     })
-        // }
-
         $("#signIn").click(function(){
             socket.emit('signIn', {
-                username: signDivUsername.value,
-                password: signDivPassword.value
+                username: $('#signDiv-username').val(),
+                password: $('#signDiv-password').val()
             })
         });
-
-        var signUp = function(){
-            socket.emit('signUp', {
-                username: signDivUsername.value,
-                password: signDivPassword.value
-            })
-        }
 
         var initialState = function(){
             console.log("reached InitialState");
@@ -170,19 +126,9 @@ $(document).ready(function () {
             enableVoting(false);
         }
 
-
         var checkState = function(){
             $('#voteDiv').toggle();
             $('#waitDiv').toggle();
-            /*if(castedVote){
-                $('#voteDiv').toggle();
-                $('#waitDiv').toggle();
-                //voteDiv.style.display = 'none';
-                //waitDiv.style.display = 'inline-block';
-            }else{
-                //voteDiv.style.display = 'inline-block';
-                //waitDiv.style.display = 'none';
-            }*/
         }
 
         var setVote = function (data){
@@ -245,10 +191,6 @@ $(document).ready(function () {
                 vote: vote
             });
         });
-
-
-
-
 // ------------------------------------------------------------
 
     var paused = false;
@@ -305,7 +247,6 @@ $(document).ready(function () {
 
         console.log(xmlhttp.responseText);
         console.log("response received!");
-
     }
 
     function onError(xmlhttp, textStatus) {
@@ -380,8 +321,6 @@ $(document).ready(function () {
                 success: onResponse,
                 error: onError
             });
-
-
         }
 
         function pauseTimer(){
