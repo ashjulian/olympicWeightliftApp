@@ -17,6 +17,7 @@
 
 body {
     padding:2%;
+    font-size: 0.6875em;
 }
 
 #voteDiv {
@@ -34,6 +35,25 @@ body {
 #judgeTitle {
     margin:0 auto;
     width:58.54167%;
+}
+
+#waitDiv {
+    margin:0 auto;
+    width:58.54167%;
+    padding:1.7793594%; 
+    max-width: 562px;
+}
+
+#arrow {
+    margin:0 auto;
+    width:58.54167%;
+    padding:1.7793594%; 
+
+}
+
+#arrow img {
+    max-width:100%;
+    margin-bottom:5px;
 }
 
 @media screen and (max-width:848px){
