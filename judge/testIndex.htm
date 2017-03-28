@@ -1,10 +1,15 @@
 <link rel="stylesheet" href="Styles.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
 <script type="text/javascript" src="Code.js"></script>
 <script src="http://cdn.socket.io/socket.io-1.4.5.js"></script>
 <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+
+<!--************************************************************************************ -->
+<!--********************************* COORDINATOR DIV ********************************** -->
+<!--************************************************************************************ -->
+
 <div id="coordinatorDiv" style="display: none">
           <div class="container">
             <div class="row">
@@ -121,6 +126,9 @@
       </div>
 </div>
 
+<!--************************************************************************************ -->
+<!--********************************* SIGN IN DIV ************************************** -->
+<!--************************************************************************************ -->
 
 <div id="signDiv">
         Username:<input id="signDiv-username"type="text"></input></br>
@@ -129,24 +137,36 @@
          
 </div>
     
-    
+<!--************************************************************************************ -->
+<!--********************************* VOTING DIV *************************************** -->
+<!--************************************************************************************ -->    
 <div id="voteDiv" style="display: none">
     <div class="row">
-    <div class="col-sm-4 information">Judges Make Your  <br/>
-        Decisions <br/>
-    </div>
+        <div class="col-sm-4 information">Judges Make Your  <br/>
+            Decisions <br/>
+        </div>
 
-    <div class="space"></div>
+        <div class="space"></div>
 
-    <div class="col-sm-2" style="padding:1%">
-        <input id="btnYes" type="image" src="lib/yes.png" class="img-responsive" alt="yes">
-    </div>
-    <div class="padding-right:10%"></div>
-    <div class="col-sm-2" style="padding:1%">
-        <input id="btnNo" type="image" src="lib/no.png" class="img-responsive" alt="no">
-    </div>
+        <div id="btnVotes">
+            <div class="col-sm-2" style="padding:1%">
+                <input id="btnYes" type="image" src="lib/yes.png" class="img-responsive" alt="yes"><input id="btnNo" type="image" src="lib/no.png" class="img-responsive" alt="no">
+            </div>
+            
+            <!--<div class="col-sm-2" style="padding:1%">
+                <input id="btnYes" type="image" src="lib/yes.png" class="img-responsive" alt="yes">
+            </div>
+            <div class="padding-right:10%"></div>
+            <div class="col-sm-2" style="padding:1%">
+                <input id="btnNo" type="image" src="lib/no.png" class="img-responsive" alt="no">
+            </div>-->
+        </div>
     </div>
 </div>
+
+<!--************************************************************************************ -->
+<!--********************************* WAITING DIV ************************************** -->
+<!--************************************************************************************ -->
 
 <div id="waitDiv" style="display: none;">
     <div class="row">

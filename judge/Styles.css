@@ -18,3 +18,50 @@
 body {
     padding:2%;
 }
+
+#voteDiv {
+    margin:0 auto;
+    width:58.54167%;
+    padding:1.7793594%; 
+    max-width: 562px; 
+}
+
+#voteDiv input {
+    max-width:50%;
+    margin:10px;
+}
+
+#judgeTitle {
+    margin:0 auto;
+    width:58.54167%;
+}
+
+@media screen and (max-width:848px){
+    #voteDiv {
+        width:85%;
+    }
+
+    #voteDiv input {
+        max-width:40%;
+        margin:10px;
+    }
+
+}
+
+@media screen and (max-width:270px){
+    #voteDiv {
+        width:85%;
+    }
+
+    #voteDiv input {
+        max-width:35%;
+        margin:10px;
+    }
+    
+    #content {
+        float:none;
+        width:80%;
+        margin:0 auto;
+    }
+
+}
