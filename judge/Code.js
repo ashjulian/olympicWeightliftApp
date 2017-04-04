@@ -40,7 +40,7 @@ $(document).ready(function () {
             //console.log("Connected...");
             enableVoting(false);
         });
-
+        
         socket.on('signInResponse', function(data){
             if(data.success){
                 if(data.judge){
