@@ -11,6 +11,7 @@ $(document).ready(function () {
     var dataArray = [];
     var valId = 0;
     var valName = "";
+    var minutes = 60;
 
     // number of participants
     var participantCount;
@@ -39,6 +40,8 @@ $(document).ready(function () {
     if (getCookie("compDate") !== "") {
         $("#txtDate").val(getCookie("compDate"));
     }
+
+    $("#btnTimerMin").prop("disabled", true);
 
     // ----------------------------------------------------------- event handlers
 
@@ -226,6 +229,25 @@ $(document).ready(function () {
     } 
 
     // ----------------------------------------------------------- JQuery Implementation
+
+    $("#btnTimerMin").click(function(){
+        // unpause the timer and set it back to the default value
+        paused = false;
+        minutes = 60;
+        $("#timerMsg").html("Timer is set to one minute.");
+        $("#btnTimerMin").prop("disabled", true);
+        $("#btnTimerTwo").prop("disabled", false);
+    });
+
+    $("#btnTimerTwo").click(function(){
+        // unpause the timer and set it back to the default value
+        paused = false;
+        minutes = 120;
+        $("#timerMsg").html("Timer is set to two minutes.");
+        $("#btnTimerTwo").prop("disabled", true);
+        $("#btnTimerMin").prop("disabled", false);
+    });
+
     $("#btnAdd").click(function(){
         if ($("#addParticipant").is(":visible")){
             // hide the add entry and display spreadsheet screen
@@ -313,13 +335,16 @@ $(document).ready(function () {
     $("#btnTimerGo").click(function(){
         // unpause the timer and set it back to the default value
         paused = false;
-        var minute = 60,
-            display = $('#timer');
-        startTimer(minute, display);
+        //minutes = 60;
+        var display = $('#timer');
+        startTimer(minutes, display);
         // enable the pause and stop buttons while disabling play
         $("#btnTimerGo").prop('disabled', true);
         $("#btnTimerPause").prop('disabled', false);
         $("#btnTimerStop").prop('disabled', false);
+
+        $("#btnTimerMin").prop('disabled', true);
+        $("#btnTimerTwo").prop('disabled', true);
     });
 
     $("#btnTimerPause").click(function(){
@@ -342,6 +367,13 @@ $(document).ready(function () {
         $("#btnTimerPause").show();
         $("#btnTimerPause").prop('disabled', true);
         $("#btnTimerResume").hide();
+
+        if (minutes === 60) {
+            $("#btnTimerTwo").prop('disabled', false);
+        } else {
+            $("#btnTimerMin").prop('disabled', false);
+        }
+
     });
 
     $("#btnTimerResume").click(function(){
