@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Competition Participants Sheet</title>
+
+    <script src="http://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+            <script type="text/javascript" src="Code.js"></script>
+        <script type="text/javascript" src="Print.js"></script>
+
+    <link rel="stylesheet" href="judge/Styles.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+  </head>
+
+  <body>
+      <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-sm-offset-1">
+                    <h4 id="compDetails">Competition Name - March 20, 2017</h4>
+                    <br/><br/>
+                    <table class="table-condensed" id="tableData">
+                        <thead>
+                            <tr>
+                                <th>Name </th>
+                                <th>Weight </th>
+                                <th>Class </th>
+                                <th>L1 </th>
+                                <th>L2 </th>
+                                <th>L3 </th>
+                                <th>S1 </th>
+                                <th>S2 </th>
+                                <th>S3 </th>
+                            </tr>
+                        </thead>
+                        <tbody id="spreadSheetBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+      </div>
+
+       <table>
+            <tr id="spreadsheetData" style="display:none;">
+                <td><input type="text" style="border:none;" name="name" value="Blah" maxlength=20 name=30></td>
+                <td><input type="text" style="border:none;" name="weight" value="Blah" maxlength=3 size=8></td>
+                <td><input type="text" style="border:none;" name="class" value="Blah" maxlength=5 size=8></td>
+                <td><input type="text" style="border:none;" name="lift1" value="Blah" maxlength=3 size=8></td>
+                <td><input type="text" style="border:none;" name="lift2" value="Blah" maxlength=3 size=8></td>
+                <td><input type="text" style="border:none;" name="lift3" value="Blah" maxlength=3 size=8></td>
+                <td><input type="text" style="border:none;" name="slift1" value="Blah" maxlength=3 size=8></td>
+                <td><input type="text" style="border:none;" name="slift2" value="Blah" maxlength=3 size=8></td>
+                <td><input type="text" style="border:none;" name="slift3" value="Blah" maxlength=3 size=8></td>
+            </tr>
+        </table>
+
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  </body>
+</html>
+
+    

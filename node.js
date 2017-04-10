@@ -155,6 +155,7 @@ io.sockets.on('connection', function(socket){
                     console.log('Decision Made');
                     socket.broadcast.emit('decisionMade', {decision:true, answer:data.vote});
                     VOTE_LIST.length = 0;
+                    console.log('decision made and list reset back to:' + VOTE_LIST.length);
                 }else{
                     VOTE_LIST.push({
                     judge:socket.id,
