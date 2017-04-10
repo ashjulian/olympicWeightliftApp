@@ -73,6 +73,10 @@ $(document).ready(function () {
                 if (--timer < 0) {
                     timer = 0;
                 }
+
+                if (seconds == 60 || seconds == 30 || seconds == 0) {
+                    document.getElementById('beep').play();
+                }
             }
 
         }, 1000);
