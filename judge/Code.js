@@ -241,6 +241,7 @@ $(document).ready(function () {
     var dataArray = [];
     var valId = 0;
     var valName = "";
+    var minutes = 60;
 
     // number of participants
     var participantCount;
@@ -300,6 +301,11 @@ $(document).ready(function () {
                 if (--timer < 0) {
                     timer = 0;
                 }
+
+                if (seconds == 60 || seconds == 30 || seconds == 0) {
+                    document.getElementById('beep').play();
+                }
+
             }
 
         }, 1000);
@@ -463,6 +469,25 @@ $(document).ready(function () {
 
 
     // ----------------------------------------------------------- JQuery Implementation
+   
+    $("#btnTimerMin").click(function(){
+        // unpause the timer and set it back to the default value
+        paused = false;
+        minutes = 60;
+        $("#timerMsg").html("Timer is set to one minute.");
+        $("#btnTimerMin").prop("disabled", true);
+        $("#btnTimerTwo").prop("disabled", false);
+    });
+
+    $("#btnTimerTwo").click(function(){
+        // unpause the timer and set it back to the default value
+        paused = false;
+        minutes = 120;
+        $("#timerMsg").html("Timer is set to two minutes.");
+        $("#btnTimerTwo").prop("disabled", true);
+        $("#btnTimerMin").prop("disabled", false);
+    });
+   
     $("#btnAdd").click(function(){
         if ($("#addParticipant").is(":visible")){
             // hide the add entry and display spreadsheet screen
@@ -550,13 +575,16 @@ $(document).ready(function () {
     $("#btnTimerGo").click(function(){
         // unpause the timer and set it back to the default value
         paused = false;
-        var minute = 60,
-            display = $('#timer');
-        startTimer(minute, display);
+        //var minute = 60,
+        var display = $('#timer');
+        startTimer(minutes, display);
         // enable the pause and stop buttons while disabling play
         $("#btnTimerGo").prop('disabled', true);
         $("#btnTimerPause").prop('disabled', false);
         $("#btnTimerStop").prop('disabled', false);
+
+        $("#btnTimerMin").prop('disabled', true);
+        $("#btnTimerTwo").prop('disabled', true);
         socket.emit('timerStart', {started:true});
     });
 
@@ -581,6 +609,13 @@ $(document).ready(function () {
         $("#btnTimerPause").show();
         $("#btnTimerPause").prop('disabled', true);
         $("#btnTimerResume").hide();
+
+        if (minutes === 60) {
+            $("#btnTimerTwo").prop('disabled', false);
+        } else {
+            $("#btnTimerMin").prop('disabled', false);
+        }
+
         socket.emit('coordinatorStopped', {timerStopped:true});
     });
 
@@ -657,7 +692,7 @@ $(document).ready(function () {
 
     $("input").focus(function() {
         valId = $(this).parent().prop("id");
-        valName = $(this).prop("name");
+        valName = $(this).prop("name"); 
         // $('#currentLift').html(valName);
         // $('#currentCompetitor').html(valName);
         console.log('valId: ' + valId + ", " + 'valName: ' + valName);
