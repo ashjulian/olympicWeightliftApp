@@ -112,7 +112,8 @@ $(document).ready(function () {
                 "lift3" : "--",
                 "slift1" : "--",
                 "slift2" : "--",
-                "slift3" : "--" 
+                "slift3" : "--",
+                "fin" : "" 
             };
 
             // convert to string (serializing)
@@ -172,6 +173,7 @@ $(document).ready(function () {
                     $(spreadTemp).children("td").eq(6).find(":input").val(partsData.slift1);
                     $(spreadTemp).children("td").eq(7).find(":input").val(partsData.slift2);
                     $(spreadTemp).children("td").eq(8).find(":input").val(partsData.slift3);
+                    $(spreadTemp).children("td").eq(9).find(":input").val(partsData.fin);
 
                     //console.log($(spreadTemp).children("td").eq(9).find(":radio").val());
                     console.log($(spreadTemp).find("td").prop("id"));
@@ -474,6 +476,32 @@ $(document).ready(function () {
                     // console.log($(this).val());
 
                     partsData[valName] = $(this).val();
+                }
+            }
+
+            var sendString = JSON.stringify(json);
+
+            setCookie("participantData", sendString, 1000);
+        }
+        
+    });
+
+    $('input[name=fin]').blur(function() {
+        $(this).val(eval($(this).val()));
+
+        if (getCookie("participantData") !== "") {
+            // grab cookie data from cookies
+            cookieData = getCookie("participantData");
+
+            // make json from the parsed cookie json
+            json = JSON.parse(cookieData);
+
+            for (var i = 0; i<json.participants.length; i++) {
+                var partsData = json.participants[i]; 
+
+                if (partsData.id == valId) {
+
+                    partsData[valName] = eval($(this).val());
                 }
             }
 
