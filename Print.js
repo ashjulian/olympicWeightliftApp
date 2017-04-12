@@ -59,6 +59,7 @@ $(document).ready(function () {
                     $(spreadTemp).children("td").eq(6).find(":input").val(partsData.slift1);
                     $(spreadTemp).children("td").eq(7).find(":input").val(partsData.slift2);
                     $(spreadTemp).children("td").eq(8).find(":input").val(partsData.slift3);
+                    $(spreadTemp).children("td").eq(9).find(":input").val(partsData.fin);
 
                     //console.log($(spreadTemp).children("td").eq(9).find(":radio").val());
                     console.log($(spreadTemp).find("td").prop("id"));
