@@ -158,7 +158,7 @@ $(document).ready(function () {
                     var partsData = json.participants[i];
 
                     // clone the table template
-                    var spreadTemp = $("#spreadsheetData").clone();
+                    var spreadTemp = $("#spreadsheetData").clone(true);
                     // change the id 
                     $(spreadTemp).prop("id", "spreadSheetData" + i);
 
