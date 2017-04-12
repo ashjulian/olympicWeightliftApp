@@ -68,13 +68,30 @@ body {
 
 }
 
-@media screen and (max-width:270px){
+@media screen and (max-width:320px){
     #voteDiv {
-        width:85%;
+        width:80%;
     }
 
     #voteDiv input {
-        max-width:35%;
+        max-width:100%;
+        margin:10px;
+    }
+    
+    #content {
+        float:none;
+        width:80%;
+        margin:0 auto;
+    }
+
+}
+@media screen and (max-width:270px){
+    #voteDiv {
+        width:100%;
+    }
+
+    #voteDiv input {
+        max-width:50%;
         margin:10px;
     }
     

@@ -154,7 +154,6 @@ io.sockets.on('connection', function(socket){
                 if(data.vote === vote.vote){
                     console.log('Decision Made');
                     socket.broadcast.emit('decisionMade', {decision:true, answer:data.vote});
-                    VOTE_LIST.length = 0;
                     console.log('decision made and list reset back to:' + VOTE_LIST.length);
                 }else{
                     VOTE_LIST.push({
@@ -175,6 +174,7 @@ io.sockets.on('connection', function(socket){
     });
 
     socket.on('timerStart', function(data){
+        VOTE_LIST.length = 0;
         socket.broadcast.emit('judgesBegin', {started:true});
     });
 
